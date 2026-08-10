@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciamento de Projetos de Software - Engenharia de Software II</title>
+    <!-- Fonte Apple / Inter com suporte a alta legibilidade -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #000000;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --card-border: rgba(255, 255, 255, 0.12);
+            --text-primary: #ffffff;
+            --text-secondary: #a1a1a6;
+            --accent-blue: #2997ff;
+            --accent-gold: #f5d130;
+            --font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", sans-serif;
+            --transition-speed: 0.5s;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* Iluminação Ambiente de Fundo */
+        .ambient-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 70vw;
+            height: 70vh;
+            background: radial-gradient(circle, rgba(41, 151, 255, 0.15) 0%, rgba(0,0,0,0) 75%);
+            z-index: 0;
+            pointer-events: none;
+            filter: blur(80px);
+        }
+
+        /* Top Bar com Logos */
+        header {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 32px 64px;
+        }
+
+        .brand-logos {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+        }
+
+        .brand-logos img {
+            height: 48px; /* Logos maiores para visualização em telão */
+            width: auto;
+            object-fit: contain;
+            filter: brightness(0) invert(1);
+            opacity: 0.95;
+        }
+
+        .header-meta {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 600;
+        }
+
+        /* Container de Slides */
+        .slides-container {
+            position: relative;
+            flex: 1;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 5;
+        }
+
+        .slide {
+            position: absolute;
+            width: 90%;
+            max-width: 1400px;
+            height: 72vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transform: scale(0.95) translateY(30px);
+            transition: all var(--transition-speed) cubic-bezier(0.16, 1, 0.3, 1);
+            padding: 60px 80px;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 32px;
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.6);
+            overflow-y: auto;
+        }
+
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+            transform: scale(1) translateY(0);
+        }
+
+        /* Tipografia de Telão / Apresentação */
+        .slide-subtitle {
+            font-size: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--accent-blue);
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .slide-title {
+            font-size: 4rem; /* Fonte grande para telão */
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            margin-bottom: 36px;
+            line-height: 1.1;
+            background: linear-gradient(180deg, #FFFFFF 0%, #A1A1A6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .slide-content {
+            font-size: 2rem; /* Fonte ampla para leitura à distância */
+            line-height: 1.5;
+            color: #e5e5ea;
+            font-weight: 400;
+        }
+
+        /* Grid de Informações */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 32px;
+            margin-top: 24px;
+        }
+
+        .info-card {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 36px;
+        }
+
+        .info-card h4 {
+            color: var(--accent-blue);
+            margin-bottom: 12px;
+            font-weight: 600;
+            font-size: 1.3rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .info-card p {
+            color: #ffffff;
+            font-size: 1.8rem;
+            font-weight: 500;
+            line-height: 1.4;
+        }
+
+        /* Capa */
+        .cover-slide {
+            text-align: center;
+            align-items: center;
+        }
+
+        .cover-slide .slide-title {
+            font-size: 5rem;
+            margin-bottom: 24px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 10px 28px;
+            border-radius: 30px;
+            background: rgba(41, 151, 255, 0.2);
+            color: var(--accent-blue);
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 28px;
+            letter-spacing: 1px;
+        }
+
+        /* Listas grandes */
+        ul.custom-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        ul.custom-list li {
+            position: relative;
+            padding-left: 40px;
+            margin-bottom: 24px;
+            font-size: 1.8rem;
+            line-height: 1.4;
+        }
+
+        ul.custom-list li::before {
+            content: "•";
+            position: absolute;
+            left: 10px;
+            color: var(--accent-blue);
+            font-size: 2.5rem;
+            top: -6px;
+        }
+
+        /* Card Destaque Aula Unica por Slide */
+        .single-aula-box {
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+        }
+
+        .aula-topic-card {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 24px;
+            padding: 40px;
+        }
+
+        .aula-topic-card label {
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--accent-blue);
+            font-weight: 700;
+            display: block;
+            margin-bottom: 12px;
+        }
+
+        /* Estilo para tabelas de apoio nos slides */
+        .slide-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 16px;
+            font-size: 1.3rem;
+        }
+
+        .slide-table th, .slide-table td {
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 12px 16px;
+            text-align: left;
+        }
+
+        .slide-table th {
+            background: rgba(41, 151, 255, 0.2);
+            color: var(--accent-blue);
+        }
+
+        .slide-table tr:nth-child(even) {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        /* Rodapé & Controles */
+        footer {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 64px;
+        }
+
+        .slide-select-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .slide-counter {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        /* Jump to Slide Selector */
+        select.slide-select {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 10px 16px;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: inherit;
+            cursor: pointer;
+            outline: none;
+        }
+
+        select.slide-select option {
+            background: #1c1c1e;
+            color: #fff;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 16px;
+        }
+
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #fff;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.08);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.2;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .nav-btn svg {
+            width: 28px;
+            height: 28px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        @media (max-width: 1024px) {
+            header, footer { padding: 24px 32px; }
+            .slide { width: 95%; padding: 40px; }
+            .slide-title { font-size: 3rem; }
+            .slide-content { font-size: 1.5rem; }
+            ul.custom-list li { font-size: 1.4rem; }
+            .info-card p { font-size: 1.4rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="ambient-glow"></div>
+
+    <!-- Header com logos fornecidas -->
+    <header>
+       
+        <div class="header-meta" id="header-meta">
+            Engenharia de Software II
+        </div>
+        <div class="header-meta" id="header-meta">
+            Prof. Dr. Diego A. C. Moraes
+        </div>
+    </header>
+
+    <!-- Main Slides -->
+    <main class="slides-container" id="slides-container"></main>
+
+    <!-- Rodapé de Controles -->
+    <footer>
+        <div class="slide-select-wrapper">
+            <span class="slide-counter" id="slide-counter">1 / 1</span>
+            <select id="slide-jump" class="slide-select" aria-label="Ir para o slide"></select>
+        </div>
+        <div class="nav-buttons">
+            <button class="nav-btn" id="prev-btn" aria-label="Slide Anterior">
+                <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            </button>
+            <button class="nav-btn" id="next-btn" aria-label="Próximo Slide">
+                <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </button>
+        </div>
+    </footer>
+
+    <script>
+        const syllabusData = {
+          "curso": "Análise e Desenvolvimento de Sistemas",
+          "unidadeCurricular": "Gerenciamento de Projetos de Software",
+          "docente": "Prof. Dr. Diego Augusto de Campos Moraes",
+          "turno": "Noturno",
+          "ano": "2026",
+          "termo": "4º termo",
+          "cargaHoraria": "Aula Prática e Teórica",
+          "ementa": "Fundamentos teóricos e conceitos essenciais de gerenciamento de projetos: Estrutura Analítica do Projeto (EAP/WBS), estimativa com a técnica PERT, identificação de Caminho Crítico (CPM) e análise probabilística de prazos via Z-Score e Distribuição Normal Padronizada.",
+          "competencias": "Compreender e aplicar técnicas estruturadas de planejamento, estimativa, análise de caminho crítico e avaliação probabilística de prazos em projetos de desenvolvimento de software.",
+          "habilidades": [
+            "Elaborar Estruturas Analíticas do Projeto (EAP/WBS) e pacotes de trabalho.",
+            "Calcular o Tempo Esperado (TE) e a Variância (σ²) utilizando estimativas PERT (três cenários).",
+            "Mapear caminhos e determinar o Caminho Crítico (CPM) e folgas do projeto.",
+            "Calcular a variância e desvio padrão globais de um projeto de software.",
+            "Realizar análise probabilística de prazos utilizando Z-Score e a Tabela Z da Distribuição Normal Padronizada."
+          ],
+          "aulas": [
+            {
+                "num": 1, 
+                "titulo": "Estrutura Analítica do Projeto (EAP / WBS)",
+                "conteudo": "Decomposição hierárquica e orientada às entregas do trabalho a ser realizado pela equipe.<br><br><b>Regra dos 100%:</b> A EAP deve incluir exatamente 100% do trabalho do escopo.<br><b>Pacote de Trabalho:</b> Nível mais baixo onde o trabalho é estimado e monitorado.<br><b>Requisitos vs. Escopo:</b> Requisitos indicam o que o software faz; Escopo define todo o trabalho necessário para entregar as funcionalidades."
+            },
+            {
+                "num": 2, 
+                "titulo": "Técnica PERT (Program Evaluation and Review Technique)",
+                "conteudo": "Técnica quantitativa de estimativa para lidar com incertezas e riscos via três cenários:<br><br>• <b>Otimista (t_o):</b> Menor tempo sob condições perfeitas.<br>• <b>Mais Provável (t_m):</b> Estimativa normal de trabalho.<br>• <b>Pessimista (t_p):</b> Maior tempo considerando cenários adversos.<br><br><b>Fórmulas:</b><br>TE = (t_o + 4*t_m + t_p) / 6<br>Variância (σ²) = [ (t_p - t_o) / 6 ]²<br>Desvio Padrão (σ) = (t_p - t_o) / 6"
+            },
+            {
+                "num": 3, 
+                "titulo": "Método do Caminho Crítico (CPM - Critical Path Method)",
+                "conteudo": "Sequência de atividades dependentes que representa o caminho mais longo pelo diagrama do projeto, determinando sua duração mínima total.<br><br>• <b>Folga Total:</b> Tempo que uma atividade pode atrasar sem atrasar a data final.<br>• <b>Atividades Críticas:</b> Atividades com Folga = 0. Qualquer atraso impacta diretamente a data de término global."
+            },
+            {
+                "num": 4, 
+                "titulo": "Análise Probabilística de Prazos (Z-Score)",
+                "conteudo": "Combinação PERT/CPM com Distribuição Normal para calcular a probabilidade de cumprimento do prazo estipulado.<br><br>• <b>Variância do Projeto:</b> Soma das variâncias APENAS das atividades críticas.<br>• <b>Desvio Padrão do Projeto:</b> Raiz Quadrada da Variância do Projeto.<br>• <b>Z-Score:</b> Z = (Prazo Desejado - Tempo Esperado) / Desvio Padrão.<br>• Consulta na Tabela Z para obter a probabilidade acumulada."
+            },
+            {
+                "num": 5, 
+                "titulo": "Estudo de Caso: HealthTech - Agendamento Online",
+                "conteudo": "Cenário de desenvolvimento de Módulo de Agendamento Online em Telemedicina decomposto em 6 atividades (A até F):<br><br>• <b>A:</b> Levantamento & Arquitetura (Precedência: —, t_o: 2, t_m: 3, t_p: 10)<br>• <b>B:</b> Módulo de Autenticação (Precedência: A, t_o: 3, t_m: 5, t_p: 7)<br>• <b>C:</b> Agendamento de Horários (Precedência: B, t_o: 4, t_m: 6, t_p: 14)<br>• <b>D:</b> Gateway de Pagamento (Precedência: B, t_o: 2, t_m: 4, t_p: 12)<br>• <b>E:</b> Serviço de Notificação (Precedência: C, D, t_o: 1, t_m: 2, t_p: 3)<br>• <b>F:</b> Testes e Homologação (Precedência: E, t_o: 2, t_m: 3, t_p: 4)"
+            },
+            {
+                "num": 6, 
+                "titulo": "Estudo de Caso: Cálculos PERT e Caminho Crítico",
+                "conteudo": "<b>Resultados PERT obtidos:</b><br>• TE_A = 4,00d (σ² = 1,78) | TE_B = 5,00d (σ² = 0,44)<br>• TE_C = 7,00d (σ² = 2,78) | TE_D = 5,00d (σ² = 2,78)<br>• TE_E = 2,00d (σ² = 0,11) | TE_F = 3,00d (σ² = 0,11)<br><br><b>Caminhos Mapeados:</b><br>• Caminho 1 (A-B-C-E-F): 4 + 5 + 7 + 2 + 3 = <b>21 dias</b> (Caminho Crítico)<br>• Caminho 2 (A-B-D-E-F): 4 + 5 + 5 + 2 + 3 = 19 dias (Folga de D = 2 dias)"
+            },
+            {
+                "num": 7, 
+                "titulo": "Estudo de Caso: Análise de Risco e Probabilidade",
+                "conteudo": "<b>Análise estatística do projeto HealthTech:</b><br>• <b>Variância do Projeto:</b> 1,78 + 0,44 + 2,78 + 0,11 + 0,11 = <b>5,22</b> (apenas atividades A, B, C, E, F)<br>• <b>Desvio Padrão do Projeto:</b> √5,22 = <b>2,28 dias</b><br><br><b>Pergunta do Sponsor:</b> Qual a chance de entregar em 23 dias?<br>• <b>Z-Score:</b> Z = (23 - 21) / 2,28 = <b>0,88</b><br>• <b>Probabilidade (Tabela Z):</b> 0,8106 (<b>81,06%</b> de probabilidade)"
+            }
+          ],
+          "tabelaZ": [
+            {"z": "0,0", "vals": ["0,5000", "0,5040", "0,5080", "0,5120", "0,5160", "0,5199", "0,5239", "0,5279", "0,5319", "0,5359"]},
+            {"z": "0,1", "vals": ["0,5398", "0,5438", "0,5478", "0,5517", "0,5557", "0,5596", "0,5636", "0,5675", "0,5714", "0,5753"]},
+            {"z": "0,8", "vals": ["0,7881", "0,7910", "0,7939", "0,7967", "0,7995", "0,8023", "0,8051", "0,8078", "0,8106", "0,8133"]},
+            {"z": "1,0", "vals": ["0,8413", "0,8438", "0,8461", "0,8485", "0,8508", "0,8531", "0,8554", "0,8577", "0,8599", "0,8621"]}
+          ]
+        };
+
+        function buildSlides(data) {
+            const slides = [];
+
+            // Slide 1: Capa
+            slides.push({
+                optName: "Capa",
+                subtitle: `${data.curso} • ${data.termo}`,
+                title: data.unidadeCurricular,
+                content: `
+                    <div class="cover-slide">
+                        <span class="badge">${data.turno} • ${data.cargaHoraria}</span>
+                        <div class="grid-2">
+                            <div class="info-card">
+                                <h4>Docente Responsável</h4>
+                                <p>${data.docente}</p>
+                            </div>
+                            <div class="info-card">
+                                <h4>Ano / Semestre</h4>
+                                <p>${data.ano}</p>
+                            </div>
+                        </div>
+                    </div>
+                `
+            });
+
+            // Slide 2: Ementa
+            slides.push({
+                optName: "Ementa",
+                subtitle: "Visão Geral do Conteúdo",
+                title: "Ementa",
+                content: `<p class="slide-content" style="font-size: 2rem; font-weight: 300; line-height: 1.6;">${data.ementa}</p>`
+            });
+
+            // Slide 3: Competências
+            slides.push({
+                optName: "Competências",
+                subtitle: "Objetivos Principais",
+                title: "Competências Desenvolvidas",
+                content: `<div class="info-card" style="padding: 48px;"><p style="font-size: 2.1rem; line-height: 1.5; color: #ffffff;">${data.competencias}</p></div>`
+            });
+
+            // Slide 4: Habilidades
+            const habList = data.habilidades.map(h => `<li>${h}</li>`).join('');
+            slides.push({
+                optName: "Habilidades",
+                subtitle: "Resultados Esperados",
+                title: "Habilidades Adquiridas",
+                content: `<ul class="custom-list">${habList}</ul>`
+            });
+
+            // SLIDES INDIVIDUAIS: 1 Slide para cada Tópico da Aula (Sem card de avaliação)
+            data.aulas.forEach((aula) => {
+                slides.push({
+                    optName: `Módulo ${aula.num}`,
+                    subtitle: `Conteúdo Teórico e Prático • Tópico ${aula.num} de ${data.aulas.length}`,
+                    title: aula.titulo,
+                    content: `
+                        <div class="single-aula-box">
+                            <div class="aula-topic-card">
+                                <label>Conteúdo Programático</label>
+                                <p class="slide-content">${aula.conteudo}</p>
+                            </div>
+                        </div>
+                    `
+                });
+            });
+
+            // Slide com Tabela Z de Apoio
+            const tabelaRows = data.tabelaZ.map(row => `
+                <tr>
+                    <td><b>Z = ${row.z}</b></td>
+                    ${row.vals.map((v, idx) => `<td style="${row.z === '0,8' && idx === 8 ? 'background: rgba(245, 209, 48, 0.4); font-weight: bold;' : ''}">${v}</td>`).join('')}
+                </tr>
+            `).join('');
+
+            slides.push({
+                optName: "Tabela Z",
+                subtitle: "Anexo de Apoio",
+                title: "Tabela Z - Distribuição Normal",
+                content: `
+                    <div style="max-height: 52vh; overflow-y: auto;">
+                        <p style="font-size: 1.4rem; margin-bottom: 12px; color: var(--text-secondary);">Exemplo de consulta rápida da Distribuição Normal Padronizada (Z):</p>
+                        <table class="slide-table">
+                            <thead>
+                                <tr>
+                                    <th>Z</th><th>0,00</th><th>0,01</th><th>0,02</th><th>0,03</th><th>0,04</th><th>0,05</th><th>0,06</th><th>0,07</th><th>0,08</th><th>0,09</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${tabelaRows}
+                            </tbody>
+                        </table>
+                    </div>
+                `
+            });
+
+            return slides;
+        }
+
+        let currentSlideIndex = 0;
+        let slidesData = [];
+
+        const slidesContainer = document.getElementById('slides-container');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const counterEl = document.getElementById('slide-counter');
+        const jumpSelect = document.getElementById('slide-jump');
+
+        function renderSlides() {
+            slidesData = buildSlides(syllabusData);
+            slidesContainer.innerHTML = '';
+            jumpSelect.innerHTML = '';
+
+            slidesData.forEach((slide, index) => {
+                // Cria elemento Slide
+                const slideEl = document.createElement('div');
+                slideEl.classList.add('slide');
+                if (index === 0) slideEl.classList.add('active');
+
+                slideEl.innerHTML = `
+                    <div class="slide-subtitle">${slide.subtitle}</div>
+                    <h2 class="slide-title">${slide.title}</h2>
+                    <div>${slide.content}</div>
+                `;
+                slidesContainer.appendChild(slideEl);
+
+                // Preenche o Select de Atalho
+                const opt = document.createElement('option');
+                opt.value = index;
+                opt.textContent = `${index + 1}. ${slide.optName}`;
+                jumpSelect.appendChild(opt);
+            });
+
+            updateControls();
+        }
+
+        function updateControls() {
+            const slideElements = document.querySelectorAll('.slide');
+            slideElements.forEach((slide, index) => {
+                slide.classList.toggle('active', index === currentSlideIndex);
+            });
+
+            counterEl.textContent = `${currentSlideIndex + 1} / ${slidesData.length}`;
+            jumpSelect.value = currentSlideIndex;
+
+            prevBtn.disabled = currentSlideIndex === 0;
+            nextBtn.disabled = currentSlideIndex === slidesData.length - 1;
+        }
+
+        function goToNextSlide() {
+            if (currentSlideIndex < slidesData.length - 1) {
+                currentSlideIndex++;
+                updateControls();
+            }
+        }
+
+        function goToPrevSlide() {
+            if (currentSlideIndex > 0) {
+                currentSlideIndex--;
+                updateControls();
+            }
+        }
+
+        // Navegação por Botões e Menu
+        nextBtn.addEventListener('click', goToNextSlide);
+        prevBtn.addEventListener('click', goToPrevSlide);
+
+        jumpSelect.addEventListener('change', (e) => {
+            currentSlideIndex = parseInt(e.target.value);
+            updateControls();
+        });
+
+        // Navegação por Teclado (Setas e Espaço)
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === 'Space') {
+                goToNextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                goToPrevSlide();
+            }
+        });
+
+        // Touch / Swipe para Telas Sensíveis ao Toque
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        document.addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+
+        document.addEventListener('touchend', e => {
+            touchEndX = e.changedTouches[0].screenX;
+            if (touchStartX - touchEndX > 50) goToNextSlide();
+            if (touchEndX - touchStartX > 50) goToPrevSlide();
+        });
+
+        renderSlides();
+    </script>
+</body>
+</html>
