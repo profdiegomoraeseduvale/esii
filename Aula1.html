@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plano de Ensino - Engenharia de Software II</title>
+    <!-- Fonte Apple / Inter com suporte a alta legibilidade -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #000000;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --card-border: rgba(255, 255, 255, 0.12);
+            --text-primary: #ffffff;
+            --text-secondary: #a1a1a6;
+            --accent-blue: #2997ff;
+            --accent-gold: #f5d130;
+            --font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", sans-serif;
+            --transition-speed: 0.5s;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* Iluminação Ambiente de Fundo */
+        .ambient-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 70vw;
+            height: 70vh;
+            background: radial-gradient(circle, rgba(41, 151, 255, 0.15) 0%, rgba(0,0,0,0) 75%);
+            z-index: 0;
+            pointer-events: none;
+            filter: blur(80px);
+        }
+
+        /* Top Bar com Logos */
+        header {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 32px 64px;
+        }
+
+        .brand-logos {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+        }
+
+        .brand-logos img {
+            height: 48px; /* Logos maiores para visualização em telão */
+            width: auto;
+            object-fit: contain;
+            filter: brightness(0) invert(1);
+            opacity: 0.95;
+        }
+
+        .header-meta {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 600;
+        }
+
+        /* Container de Slides */
+        .slides-container {
+            position: relative;
+            flex: 1;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 5;
+        }
+
+        .slide {
+            position: absolute;
+            width: 90%;
+            max-width: 1400px;
+            height: 72vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transform: scale(0.95) translateY(30px);
+            transition: all var(--transition-speed) cubic-bezier(0.16, 1, 0.3, 1);
+            padding: 60px 80px;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 32px;
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.6);
+            overflow-y: auto;
+        }
+
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+            transform: scale(1) translateY(0);
+        }
+
+        /* Tipografia de Telão / Apresentação */
+        .slide-subtitle {
+            font-size: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--accent-blue);
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .slide-title {
+            font-size: 4rem; /* Fonte grande para telão */
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            margin-bottom: 36px;
+            line-height: 1.1;
+            background: linear-gradient(180deg, #FFFFFF 0%, #A1A1A6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .slide-content {
+            font-size: 2rem; /* Fonte ampla para leitura à distância */
+            line-height: 1.5;
+            color: #e5e5ea;
+            font-weight: 400;
+        }
+
+        /* Grid de Informações */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 32px;
+            margin-top: 24px;
+        }
+
+        .info-card {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 36px;
+        }
+
+        .info-card h4 {
+            color: var(--accent-blue);
+            margin-bottom: 12px;
+            font-weight: 600;
+            font-size: 1.3rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .info-card p {
+            color: #ffffff;
+            font-size: 1.8rem;
+            font-weight: 500;
+            line-height: 1.4;
+        }
+
+        /* Capa */
+        .cover-slide {
+            text-align: center;
+            align-items: center;
+        }
+
+        .cover-slide .slide-title {
+            font-size: 5rem;
+            margin-bottom: 24px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 10px 28px;
+            border-radius: 30px;
+            background: rgba(41, 151, 255, 0.2);
+            color: var(--accent-blue);
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 28px;
+            letter-spacing: 1px;
+        }
+
+        /* Listas grandes */
+        ul.custom-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        ul.custom-list li {
+            position: relative;
+            padding-left: 40px;
+            margin-bottom: 24px;
+            font-size: 1.8rem;
+            line-height: 1.4;
+        }
+
+        ul.custom-list li::before {
+            content: "•";
+            position: absolute;
+            left: 10px;
+            color: var(--accent-blue);
+            font-size: 2.5rem;
+            top: -6px;
+        }
+
+        /* Card Destaque Aula Unica por Slide */
+        .single-aula-box {
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+        }
+
+        .aula-topic-card {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 24px;
+            padding: 40px;
+        }
+
+        .aula-topic-card label {
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--accent-blue);
+            font-weight: 700;
+            display: block;
+            margin-bottom: 12px;
+        }
+
+        .aula-eval-card {
+            background: rgba(245, 209, 48, 0.06);
+            border: 1px solid rgba(245, 209, 48, 0.25);
+            border-radius: 24px;
+            padding: 36px;
+        }
+
+        .aula-eval-card label {
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--accent-gold);
+            font-weight: 700;
+            display: block;
+            margin-bottom: 12px;
+        }
+
+        /* Rodapé & Controles */
+        footer {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 64px;
+        }
+
+        .slide-select-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .slide-counter {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        /* Jump to Slide Selector */
+        select.slide-select {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 10px 16px;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: inherit;
+            cursor: pointer;
+            outline: none;
+        }
+
+        select.slide-select option {
+            background: #1c1c1e;
+            color: #fff;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 16px;
+        }
+
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #fff;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.08);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.2;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .nav-btn svg {
+            width: 28px;
+            height: 28px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        @media (max-width: 1024px) {
+            header, footer { padding: 24px 32px; }
+            .slide { width: 95%; padding: 40px; }
+            .slide-title { font-size: 3rem; }
+            .slide-content { font-size: 1.5rem; }
+            ul.custom-list li { font-size: 1.4rem; }
+            .info-card p { font-size: 1.4rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="ambient-glow"></div>
+
+    <!-- Header com logos fornecidas -->
+    <header>
+        <div class="brand-logos">
+            <img src="/Users/macbookprodediego/Downloads/LogoCTE.png" alt="Centro Tecnológico Eduvale">
+            <img src="logo-uneduvale.png" alt="Uneduvale">
+        </div>
+        <div class="header-meta" id="header-meta">
+            Engenharia de Software II
+        </div>
+        <div class="header-meta" id="header-meta">
+            Prof. Dr. Diego A. C. Moraes
+        </div>
+    </header>
+
+    <!-- Main Slides -->
+    <main class="slides-container" id="slides-container"></main>
+
+    <!-- Rodapé de Controles -->
+    <footer>
+        <div class="slide-select-wrapper">
+            <span class="slide-counter" id="slide-counter">1 / 1</span>
+            <select id="slide-jump" class="slide-select" aria-label="Ir para o slide"></select>
+        </div>
+        <div class="nav-buttons">
+            <button class="nav-btn" id="prev-btn" aria-label="Slide Anterior">
+                <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            </button>
+            <button class="nav-btn" id="next-btn" aria-label="Próximo Slide">
+                <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </button>
+        </div>
+    </footer>
+
+    <script>
+        const syllabusData = {
+          "curso": "Análise e Desenvolvimento de Sistemas",
+          "unidadeCurricular": "Engenharia de Software II",
+          "docente": "Diego Augusto de Campos Moraes",
+          "turno": "Noturno",
+          "ano": "2026",
+          "termo": "4º termo",
+          "cargaHoraria": "60h",
+          "ementa": "Conceitos de Projeto. Gestão de Projetos de Software. Métricas de Produto. Gestão da Qualidade. Gerenciamento de Configuração. Manutenção de Software. Verificação e Validação de Software. Testes e Revisão de Software. Documentação. Engenharia de Segurança.",
+          "competencias": "Planejar, modelar e gerenciar projetos de software complexos. Aplicar padrões de projeto e arquiteturas de software. Implementar testes, gerenciar qualidade e documentação de sistemas. Gerenciar manutenção, evolução e métricas de software para garantir a entrega de produtos confiáveis e eficientes.",
+          "habilidades": [
+            "Aplicar técnicas avançadas de engenharia de requisitos.",
+            "Desenvolver modelos de software utilizando UML e outras ferramentas.",
+            "Aplicar padrões de projeto e boas práticas de arquitetura.",
+            "Planejar e executar testes de software.",
+            "Gerenciar qualidade, métricas e documentação de sistemas.",
+            "Elaborar relatórios de progresso e manutenção de software.",
+            "Avaliar e aplicar processos de melhoria contínua em projetos de software."
+          ],
+          "bibliografiaBasica": [
+            "PAULA FILHO, W. P. Engenharia de software: fundamentos, métodos e padrões. 3.ed. LTC, 2009.",
+            "SOMMERVILLE, I. Engenharia de software. 10.ed. Pearson, 2019.",
+            "MASSARI, V. L. Gerenciamento Ágil de Projetos. 2.ed. Brasport, 2018."
+          ],
+          "bibliografiaComplementar": [
+            "MORAIS, I. S. de. Engenharia de software. Pearson, 2017.",
+            "ANDRADE JÚNIOR, J. R. de. Gerência de Configuração. Pearson, 2015.",
+            "POLO, R. C. Validação e teste de software. Contentus, 2020.",
+            "KERZNER, H. Gerenciamento de projetos: uma abordagem sistêmica... Blucher, 2015.",
+            "HELM, R. et al. Padrões de Projeto. Bookman.",
+            "GALLOTTI, G. M. A. Qualidade de software. Pearson, 2015."
+          ],
+          "aulas": [
+            {"num": 1, "conteudo": "Apresentação da disciplina e Conceitos de Projeto de Software", "avaliacao": "Discussão e alinhamento dos conceitos básicos de projeto"},
+            {"num": 2, "conteudo": "Gestão de Projetos de Software: Planejamento, escopo e estimativas", "avaliacao": "Exercício prático de planejamento e elaboração de cronograma"},
+            {"num": 3, "conteudo": "Gestão de Projetos de Software: Métodos ágeis e tradicionais de acompanhamento", "avaliacao": "Estudo de caso sobre gestão e frameworks ágeis"},
+            {"num": 4, "conteudo": "Documentação de Software: Modelos, especificações e documentação técnica", "avaliacao": "Elaboração de artefatos de documentação de projeto"},
+            {"num": 5, "conteudo": "Métricas de Produto: Conceitos, métricas de tamanho e complexidade", "avaliacao": "Exercício de cálculo e aplicação de métricas de produto"},
+            {"num": 6, "conteudo": "Gestão da Qualidade de Software: Padrões, normas (ISO/IEEE) e garantia de qualidade", "avaliacao": "Análise de processos de garantia da qualidade de software"},
+            {"num": 7, "conteudo": "Gerenciamento de Configuração: Conceitos, controle de versão e baselines", "avaliacao": "Atividade prática de versionamento e gerenciamento de mudanças"},
+            {"num": 8, "conteudo": "Revisão e integração dos conceitos de Gestão, Métricas, Qualidade e Configuração", "avaliacao": "Resolução de exercícios e revisão para avaliação"},
+            {"num": 9, "conteudo": "Aplicação de Atividade Avaliativa 1", "avaliacao": "Atividade Avaliativa 1 (Escrita / Prática)"},
+            {"num": 10, "conteudo": "Verificação e Validação de Software (V&V): Conceitos fundamentais e planejamento", "avaliacao": "Elaboração de plano de Verificação e Validação"},
+            {"num": 11, "conteudo": "Revisão de Software: Inspeções, revisões pelos pares e walkthroughs", "avaliacao": "Atividade prática de inspeção e revisão de código/documentos"},
+            {"num": 12, "conteudo": "Testes de Software: Fundamentos, níveis (unitário, integração, sistema, aceite)", "avaliacao": "Elaboração de casos de teste estruturados"},
+            {"num": 13, "conteudo": "Testes de Software: Técnicas funcionais (caixa-preta) e estruturais (caixa-branca)", "avaliacao": "Exercício de aplicação de técnicas de teste caixa-preta e caixa-branca"},
+            {"num": 14, "conteudo": "Testes e Automação de Testes de Software", "avaliacao": "Prática de criação e execução de testes automatizados"},
+            {"num": 15, "conteudo": "Manutenção de Software: Tipos de manutenção, refatoração e evolução de sistemas", "avaliacao": "Análise de código legado e planejamento de refatoração"},
+            {"num": 16, "conteudo": "Engenharia de Segurança: Princípios de segurança e desenvolvimento seguro de software", "avaliacao": "Análise de vulnerabilidades e boas práticas de codificação segura"},
+            {"num": 17, "conteudo": "Revisão e síntese dos tópicos de Testes, V&V, Manutenção e Engenharia de Segurança", "avaliacao": "Atividade prática integradora para consolidação de conteúdos"},
+            {"num": 18, "conteudo": "Aplicação de Atividade Avaliativa 2", "avaliacao": "Atividade Avaliativa 2 (Escrita / Prática)"},
+            {"num": 19, "conteudo": "Apresentação e análise de resultados das Atividades Avaliativas e feedback contínuo", "avaliacao": "Discussão em sala e avaliação formativa individual/em grupo"},
+            {"num": 20, "conteudo": "Encerramento da disciplina, consolidação de notas e considerações finais", "avaliacao": "Avaliação final do desempenho da disciplina e fechamento de médias"}
+          ]
+        };
+
+        function buildSlides(data) {
+            const slides = [];
+
+            // Slide 1: Capa
+            slides.push({
+                optName: "Capa",
+                subtitle: `${data.curso} • ${data.termo}`,
+                title: data.unidadeCurricular,
+                content: `
+                    <div class="cover-slide">
+                        <span class="badge">${data.turno} • ${data.cargaHoraria} Horas Carga Horária</span>
+                        <div class="grid-2">
+                            <div class="info-card">
+                                <h4>Docente Responsável</h4>
+                                <p>${data.docente}</p>
+                            </div>
+                            <div class="info-card">
+                                <h4>Ano / Semestre</h4>
+                                <p>${data.ano}</p>
+                            </div>
+                        </div>
+                    </div>
+                `
+            });
+
+            // Slide 2: Ementa
+            slides.push({
+                optName: "Ementa",
+                subtitle: "Visão Geral da Disciplina",
+                title: "Ementa",
+                content: `<p class="slide-content" style="font-size: 2.2rem; font-weight: 300; line-height: 1.6;">${data.ementa}</p>`
+            });
+
+            // Slide 3: Competências
+            slides.push({
+                optName: "Competências",
+                subtitle: "Objetivos Principais",
+                title: "Competências Desenvolvidas",
+                content: `<div class="info-card" style="padding: 48px;"><p style="font-size: 2.1rem; line-height: 1.5; color: #ffffff;">${data.competencias}</p></div>`
+            });
+
+            // Slide 4: Habilidades
+            const habList = data.habilidades.map(h => `<li>${h}</li>`).join('');
+            slides.push({
+                optName: "Habilidades",
+                subtitle: "Resultados Esperados",
+                title: "Habilidades Adquiridas",
+                content: `<ul class="custom-list">${habList}</ul>`
+            });
+
+            // SLIDES INDIVIDUAIS: 1 Slide para cada Aula (Encontro 1 ao 20)
+            data.aulas.forEach((aula) => {
+                slides.push({
+                    optName: `Aula ${aula.num}`,
+                    subtitle: `Cronograma • Encontro ${aula.num} de 20`,
+                    title: `Aula ${aula.num}`,
+                    content: `
+                        <div class="single-aula-box">
+                            <div class="aula-topic-card">
+                                <label>Conteúdo Programático</label>
+                                <p class="slide-content">${aula.conteudo}</p>
+                            </div>
+                            <div class="aula-eval-card">
+                                <label>Atividade / Avaliação Prevista</label>
+                                <p class="slide-content" style="font-size: 1.8rem; color: #ffffff;">${aula.avaliacao}</p>
+                            </div>
+                        </div>
+                    `
+                });
+            });
+
+            // Slide Bibliografia Básica
+            const bibBasicaHTML = data.bibliografiaBasica.map(b => `<div class="info-card" style="margin-bottom: 20px;"><p style="font-size: 1.5rem;">${b}</p></div>`).join('');
+            slides.push({
+                optName: "Bib. Básica",
+                subtitle: "Referências",
+                title: "Bibliografia Básica",
+                content: bibBasicaHTML
+            });
+
+            // Slide Bibliografia Complementar
+            const bibCompHTML = data.bibliografiaComplementar.map(b => `<div class="info-card" style="margin-bottom: 16px;"><p style="font-size: 1.3rem;">${b}</p></div>`).join('');
+            slides.push({
+                optName: "Bib. Complementar",
+                subtitle: "Aprofundamento",
+                title: "Bibliografia Complementar",
+                content: `<div style="max-height: 52vh; overflow-y: auto;">${bibCompHTML}</div>`
+            });
+
+            return slides;
+        }
+
+        let currentSlideIndex = 0;
+        let slidesData = [];
+
+        const slidesContainer = document.getElementById('slides-container');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const counterEl = document.getElementById('slide-counter');
+        const jumpSelect = document.getElementById('slide-jump');
+
+        function renderSlides() {
+            slidesData = buildSlides(syllabusData);
+            slidesContainer.innerHTML = '';
+            jumpSelect.innerHTML = '';
+
+            slidesData.forEach((slide, index) => {
+                // Cria elemento Slide
+                const slideEl = document.createElement('div');
+                slideEl.classList.add('slide');
+                if (index === 0) slideEl.classList.add('active');
+
+                slideEl.innerHTML = `
+                    <div class="slide-subtitle">${slide.subtitle}</div>
+                    <h2 class="slide-title">${slide.title}</h2>
+                    <div>${slide.content}</div>
+                `;
+                slidesContainer.appendChild(slideEl);
+
+                // Preenche o Select de Atalho
+                const opt = document.createElement('option');
+                opt.value = index;
+                opt.textContent = `${index + 1}. ${slide.optName}`;
+                jumpSelect.appendChild(opt);
+            });
+
+            updateControls();
+        }
+
+        function updateControls() {
+            const slideElements = document.querySelectorAll('.slide');
+            slideElements.forEach((slide, index) => {
+                slide.classList.toggle('active', index === currentSlideIndex);
+            });
+
+            counterEl.textContent = `${currentSlideIndex + 1} / ${slidesData.length}`;
+            jumpSelect.value = currentSlideIndex;
+
+            prevBtn.disabled = currentSlideIndex === 0;
+            nextBtn.disabled = currentSlideIndex === slidesData.length - 1;
+        }
+
+        function goToNextSlide() {
+            if (currentSlideIndex < slidesData.length - 1) {
+                currentSlideIndex++;
+                updateControls();
+            }
+        }
+
+        function goToPrevSlide() {
+            if (currentSlideIndex > 0) {
+                currentSlideIndex--;
+                updateControls();
+            }
+        }
+
+        // Navegação por Botões e Menu
+        nextBtn.addEventListener('click', goToNextSlide);
+        prevBtn.addEventListener('click', goToPrevSlide);
+
+        jumpSelect.addEventListener('change', (e) => {
+            currentSlideIndex = parseInt(e.target.value);
+            updateControls();
+        });
+
+        // Navegação por Teclado (Setas e Espaço)
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === 'Space') {
+                goToNextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                goToPrevSlide();
+            }
+        });
+
+        // Touch / Swipe para Telas Sensíveis ao Toque
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        document.addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+
+        document.addEventListener('touchend', e => {
+            touchEndX = e.changedTouches[0].screenX;
+            if (touchStartX - touchEndX > 50) goToNextSlide();
+            if (touchEndX - touchStartX > 50) goToPrevSlide();
+        });
+
+        renderSlides();
+    </script>
+</body>
+</html>

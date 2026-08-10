@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal da Disciplina - Engenharia de Software II</title>
+    <!-- Fonte Apple / Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #000000;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --card-border: rgba(255, 255, 255, 0.12);
+            --text-primary: #ffffff;
+            --text-secondary: #a1a1a6;
+            --accent-blue: #2997ff;
+            --accent-green: #30d158;
+            --accent-gold: #f5d130;
+            --font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", sans-serif;
+            --transition-speed: 0.3s;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            min-height: 100vh;
+            min-height: 100dvh;
+            width: 100vw;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* Iluminação Ambiente de Fundo */
+        .ambient-glow {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80vw;
+            height: 80vh;
+            background: radial-gradient(circle, rgba(41, 151, 255, 0.12) 0%, rgba(0,0,0,0) 75%);
+            z-index: 0;
+            pointer-events: none;
+            filter: blur(80px);
+        }
+
+        /* Header com Logos */
+        header {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: clamp(16px, 2.5vh, 28px) clamp(20px, 4vw, 64px);
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .brand-logos {
+            display: flex;
+            align-items: center;
+            gap: clamp(12px, 2vw, 32px);
+        }
+
+        .brand-logos img {
+            height: clamp(28px, 4.5vh, 44px);
+            width: auto;
+            object-fit: contain;
+            filter: brightness(0) invert(1);
+            opacity: 0.95;
+        }
+
+        .header-meta {
+            font-size: clamp(0.75rem, 1.2vw, 1.1rem);
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 600;
+        }
+
+        /* Container Principal */
+        main {
+            position: relative;
+            flex: 1;
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            z-index: 5;
+            padding: clamp(20px, 3vh, 40px) clamp(20px, 4vw, 64px);
+            display: flex;
+            flex-direction: column;
+            gap: clamp(24px, 3.5vh, 40px);
+        }
+
+        .home-title-box {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .home-title-box h1 {
+            font-size: clamp(2.2rem, 4vw, 3.8rem);
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            background: linear-gradient(180deg, #FFFFFF 0%, #A1A1A6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .home-title-box p {
+            color: var(--text-secondary);
+            font-size: clamp(1rem, 1.3vw, 1.3rem);
+            margin-top: 8px;
+        }
+
+        .home-section-label {
+            font-size: clamp(0.9rem, 1.1vw, 1.2rem);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--accent-blue);
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        /* Grids de Botões */
+        .home-menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 16px;
+        }
+
+        .home-aulas-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 18px;
+        }
+
+        /* Card Botão de Informações */
+        .info-card-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 18px;
+            padding: 20px;
+            text-align: left;
+            color: #fff;
+            cursor: pointer;
+            transition: all var(--transition-speed) ease;
+            backdrop-filter: blur(20px);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 110px;
+        }
+
+        .info-card-btn:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: var(--accent-blue);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
+        }
+
+        .info-card-btn .btn-tag {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--accent-blue);
+            font-weight: 700;
+        }
+
+        .info-card-btn .btn-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-top: 8px;
+            color: #ffffff;
+        }
+
+        /* Card Botão de Aula (Link Externo) */
+        .aula-card-link {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 22px;
+            text-decoration: none;
+            color: #fff;
+            transition: all var(--transition-speed) ease;
+            backdrop-filter: blur(20px);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 140px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .aula-card-link::after {
+            content: "Acessar Aula →";
+            position: absolute;
+            bottom: 18px;
+            right: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--accent-blue);
+            opacity: 0;
+            transform: translateX(-10px);
+            transition: all 0.3s ease;
+        }
+
+        .aula-card-link:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--accent-blue);
+            transform: translateY(-4px);
+            box-shadow: 0 16px 32px rgba(41, 151, 255, 0.15);
+        }
+
+        .aula-card-link:hover::after {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .aula-card-link .aula-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .aula-card-link .aula-badge {
+            background: rgba(41, 151, 255, 0.15);
+            color: var(--accent-blue);
+            font-size: 0.85rem;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 20px;
+            letter-spacing: 0.5px;
+        }
+
+        .aula-card-link .aula-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-top: 14px;
+            margin-bottom: 12px;
+            line-height: 1.4;
+            color: #f5f5f7;
+        }
+
+        /* Modal para Informações Gerais (Ementa, Bibliografia, etc) */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(20px);
+            z-index: 100;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-card {
+            background: rgba(28, 28, 30, 0.95);
+            border: 1px solid var(--card-border);
+            border-radius: 28px;
+            max-width: 800px;
+            width: 100%;
+            max-height: 80vh;
+            padding: clamp(24px, 4vw, 48px);
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.8);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: #fff;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .modal-title {
+            font-size: clamp(1.6rem, 3vw, 2.4rem);
+            font-weight: 800;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+
+        .modal-body {
+            font-size: 1.15rem;
+            line-height: 1.6;
+            color: #e5e5ea;
+        }
+
+        .modal-body ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .modal-body ul li {
+            position: relative;
+            padding-left: 24px;
+            margin-bottom: 14px;
+        }
+
+        .modal-body ul li::before {
+            content: "•";
+            position: absolute;
+            left: 4px;
+            color: var(--accent-blue);
+            font-size: 1.6rem;
+            top: -3px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 24px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            margin-top: auto;
+        }
+
+        @media (max-width: 600px) {
+            .header-meta { display: none; }
+            .home-aulas-grid { grid-template-columns: 1fr; }
+            .home-menu-grid { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="ambient-glow"></div>
+
+    <header>
+        <div class="brand-logos">
+            <img src="/Users/macbookprodediego/Downloads/LogoCTE.png" alt="Centro Tecnológico Eduvale">
+            <img src="/Users/macbookprodediego/Downloads/logo-uneduvale.png" alt="Uneduvale">
+        </div>
+        <div class="header-meta">Engenharia de Software II</div>
+    </header>
+
+    <main>
+        <div class="home-title-box">
+            <h1>Engenharia de Software II</h1>
+        </div>
+
+        <!-- Seção 1: Informações do Plano de Ensino -->
+        <div>
+            <div class="home-section-label">Plano de Ensino</div>
+            <div class="home-menu-grid" id="info-grid"></div>
+        </div>
+
+        <!-- Seção 2: Links para as Aulas (.html) -->
+        <div>
+            <div class="home-section-label">Aulas da Disciplina</div>
+            <div class="home-aulas-grid" id="aulas-grid"></div>
+        </div>
+    </main>
+
+    <footer>
+        Engenharia de Software II • Prof. Dr. Diego Augusto de Campos Moraes
+    </footer>
+
+    <!-- Modal de Informações -->
+    <div class="modal-overlay" id="info-modal">
+        <div class="modal-card">
+            <button class="modal-close" id="modal-close-btn">&times;</button>
+            <h2 class="modal-title" id="modal-title">Título</h2>
+            <div class="modal-body" id="modal-body">Conteúdo...</div>
+        </div>
+    </div>
+
+    <script>
+        const syllabusData = {
+          "curso": "Análise e Desenvolvimento de Sistemas",
+          "unidadeCurricular": "Engenharia de Software II",
+          "docente": "Diego Augusto de Campos Moraes",
+          "turno": "Noturno",
+          "ano": "2026",
+          "termo": "4º termo",
+          "cargaHoraria": "60h",
+          "ementa": "Conceitos de Projeto. Gestão de Projetos de Software. Métricas de Produto. Gestão da Qualidade. Gerenciamento de Configuração. Manutenção de Software. Verificação e Validação de Software. Testes e Revisão de Software. Documentação. Engenharia de Segurança.",
+          "competencias": "Planejar, modelar e gerenciar projetos de software complexos. Aplicar padrões de projeto e arquiteturas de software. Implementar testes, gerenciar qualidade e documentação de sistemas. Gerenciar manutenção, evolução e métricas de software para garantir a entrega de produtos confiáveis e eficientes.",
+          "habilidades": [
+            "Aplicar técnicas avançadas de engenharia de requisitos.",
+            "Desenvolver modelos de software utilizando UML e outras ferramentas.",
+            "Aplicar padrões de projeto e boas práticas de arquitetura.",
+            "Planejar e executar testes de software.",
+            "Gerenciar qualidade, métricas e documentação de sistemas.",
+            "Elaborar relatórios de progresso e manutenção de software.",
+            "Avaliar e aplicar processos de melhoria contínua em projetos de software."
+          ],
+          "bibliografiaBasica": [
+            "PAULA FILHO, W. P. Engenharia de software: fundamentos, métodos e padrões. 3.ed. LTC, 2009.",
+            "SOMMERVILLE, I. Engenharia de software. 10.ed. Pearson, 2019.",
+            "MASSARI, V. L. Gerenciamento Ágil de Projetos. 2.ed. Brasport, 2018."
+          ],
+          "bibliografiaComplementar": [
+            "MORAIS, I. S. de. Engenharia de software. Pearson, 2017.",
+            "ANDRADE JÚNIOR, J. R. de. Gerência de Configuração. Pearson, 2015.",
+            "POLO, R. C. Validação e teste de software. Contentus, 2020.",
+            "KERZNER, H. Gerenciamento de projetos: uma abordagem sistêmica... Blucher, 2015.",
+            "HELM, R. et al. Padrões de Projeto. Bookman.",
+            "GALLOTTI, G. M. A. Qualidade de software. Pearson, 2015."
+          ],
+          "aulas": [
+            {"num": 1, "link": "aula1.html", "conteudo": "Apresentação da disciplina e Conceitos de Projeto de Software"},
+            {"num": 2, "link": "aula2.html", "conteudo": "Gestão de Projetos de Software: Planejamento, escopo e estimativas"},
+            {"num": 3, "link": "aula3.html", "conteudo": "Gestão de Projetos de Software: Métodos ágeis e tradicionais"},
+            {"num": 4, "link": "aula4.html", "conteudo": "Documentação de Software: Modelos e especificações técnicas"},
+            {"num": 5, "link": "aula5.html", "conteudo": "Métricas de Produto: Conceitos, tamanho e complexidade"},
+            {"num": 6, "link": "aula6.html", "conteudo": "Gestão da Qualidade: Padrões, normas (ISO/IEEE) e garantia"},
+            {"num": 7, "link": "aula7.html", "conteudo": "Gerenciamento de Configuração: Controle de versão e baselines"},
+            {"num": 8, "link": "aula8.html", "conteudo": "Revisão e integração dos conceitos iniciais"},
+            {"num": 9, "link": "aula9.html", "conteudo": "Aplicação de Atividade Avaliativa 1"},
+            {"num": 10, "link": "aula10.html", "conteudo": "Verificação e Validação de Software (V&V)"},
+            {"num": 11, "link": "aula11.html", "conteudo": "Revisão de Software: Inspeções e walkthroughs"},
+            {"num": 12, "link": "aula12.html", "conteudo": "Testes de Software: Fundamentos e níveis de teste"},
+            {"num": 13, "link": "aula13.html", "conteudo": "Testes: Técnicas caixa-preta e caixa-branca"},
+            {"num": 14, "link": "aula14.html", "conteudo": "Testes e Automação de Testes de Software"},
+            {"num": 15, "link": "aula15.html", "conteudo": "Manutenção de Software e Refatoração"},
+            {"num": 16, "link": "aula16.html", "conteudo": "Engenharia de Segurança e Desenvolvimento Seguro"},
+            {"num": 17, "link": "aula17.html", "conteudo": "Revisão e síntese dos tópicos de Testes e V&V"},
+            {"num": 18, "link": "aula18.html", "conteudo": "Aplicação de Atividade Avaliativa 2"},
+            {"num": 19, "link": "aula19.html", "conteudo": "Análise de resultados e feedback contínuo"},
+            {"num": 20, "link": "aula20.html", "conteudo": "Encerramento da disciplina e consolidação de notas"}
+          ]
+        };
+
+        const infoGrid = document.getElementById('info-grid');
+        const aulasGrid = document.getElementById('aulas-grid');
+        const modal = document.getElementById('info-modal');
+        const modalTitle = document.getElementById('modal-title');
+        const modalBody = document.getElementById('modal-body');
+        const modalCloseBtn = document.getElementById('modal-close-btn');
+
+        // Cards individuais do Plano de Ensino
+        const generalCards = [
+            {
+                tag: "Conteúdo",
+                title: "Ementa",
+                content: `<p>${syllabusData.ementa}</p>`
+            },
+            {
+                tag: "Objetivo",
+                title: "Competências",
+                content: `<p>${syllabusData.competencias}</p>`
+            },
+            {
+                tag: "Prática",
+                title: "Habilidades",
+                content: `<ul>${syllabusData.habilidades.map(h => `<li>${h}</li>`).join('')}</ul>`
+            },
+            {
+                tag: "Leitura",
+                title: "Bibliografia Básica",
+                content: `<ul>${syllabusData.bibliografiaBasica.map(b => `<li>${b}</li>`).join('')}</ul>`
+            },
+            {
+                tag: "Suporte",
+                title: "Bibliografia Complementar",
+                content: `<ul>${syllabusData.bibliografiaComplementar.map(b => `<li>${b}</li>`).join('')}</ul>`
+            }
+        ];
+
+        generalCards.forEach(card => {
+            const btn = document.createElement('div');
+            btn.className = 'info-card-btn';
+            btn.innerHTML = `
+                <span class="btn-tag">${card.tag}</span>
+                <span class="btn-title">${card.title}</span>
+            `;
+            btn.addEventListener('click', () => {
+                modalTitle.textContent = card.title;
+                modalBody.innerHTML = card.content;
+                modal.classList.add('active');
+            });
+            infoGrid.appendChild(btn);
+        });
+
+        // Renderiza Botões das 20 Aulas
+        syllabusData.aulas.forEach(aula => {
+            const link = document.createElement('a');
+            link.className = 'aula-card-link';
+            link.href = aula.link || `aula${aula.num}.html`;
+            
+            link.innerHTML = `
+                <div class="aula-header">
+                    <span class="aula-badge">Aula ${aula.num}</span>
+                </div>
+                <div class="aula-title">${aula.conteudo}</div>
+            `;
+            aulasGrid.appendChild(link);
+        });
+
+        // Fechar Modal
+        modalCloseBtn.addEventListener('click', () => modal.classList.remove('active'));
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) modal.classList.remove('active');
+        });
+    </script>
+</body>
+</html>
